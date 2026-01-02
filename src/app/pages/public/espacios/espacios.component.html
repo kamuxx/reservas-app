@@ -1,0 +1,46 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-col md:flex-row gap-8">
+        <!-- Sidebar Filters -->
+        <app-filtros (applyFilters)="handleSearchSpaces($event)"></app-filtros>
+
+        <!-- Grid -->
+        <div class="flex-1">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-slate-900">Espacios Disponibles</h1>
+                    <p class="text-slate-500 mt-1">Encuentra y reserva el lugar perfecto para trabajar.</p>
+                </div>
+
+                <div class="flex items-center bg-white border border-slate-200 rounded-lg p-1 shadow-sm">
+                    <span class="text-xs text-slate-500 font-medium px-3">Ordenar por:</span>
+                    <select
+                        class="border-none bg-transparent text-sm font-medium text-slate-700 focus:ring-0 cursor-pointer">
+                        <option>Recomendados</option>
+                        <option>Precio: Menor a Mayor</option>
+                        <option>Precio: Mayor a Menor</option>
+                        <option>Capacidad</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="spaces-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <!-- Cards will be injected here -->
+                <div class="col-span-full flex justify-center py-20">
+                    <div class="flex flex-col items-center">
+                        @if(loading){
+                            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600 mb-4"></div>
+                            <p class="text-slate-400 text-sm">Cargando espacios...</p>
+                        } 
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            @for (space of mockSpaces; track $index) {
+                                <app-space-card class="w-full"  [space]="space"></app-space-card>
+                            }
+                        </div>
+                        
+                    </div> 
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

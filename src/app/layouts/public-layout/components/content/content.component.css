@@ -1,0 +1,5 @@
+.content-main {
+  flex: 1;
+  padding: 20px;
+  min-height: calc(100vh - 120px); /* Ajusta según altura de navbar + footer */
+}

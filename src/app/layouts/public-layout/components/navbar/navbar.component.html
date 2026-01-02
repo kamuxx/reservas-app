@@ -1,0 +1,40 @@
+<nav class="bg-primary text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex items-center">
+                <a href="#/"
+                    class="flex-shrink-0 font-bold text-xl tracking-wider hover:text-gray-200 transition-colors">
+                    RESERVAS APP
+                </a>
+                <div class="hidden md:block ml-10">
+                    <div class="flex items-baseline space-x-4">
+                        <a href="#/espacios"
+                            class="hover:bg-slate-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Espacios</a>
+                        @if(isAuth){
+                        <a href="#/mis-reservas"
+                            class="hover:bg-slate-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Mis
+                            Reservas</a>
+                        }
+                        @if(user?.role === 'admin'){
+                        <a href="#/admin"
+                            class="hover:bg-slate-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Admin</a>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="hidden md:block">
+                <div class="ml-4 flex items-center md:ml-6">
+                    @if(isAuth){
+                    <span class="text-sm mr-4 text-gray-300">Hola, {{user.fullName || 'Usuario'}}</span>
+                    <button id="logout-btn"
+                        class="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Salir</button>
+                    }
+                    @if(!isAuth){
+                    <a href="#/login"
+                        class="bg-emerald-500 hover:bg-emerald-600 px-4 py-2 rounded-md text-sm font-medium transition-colors">Ingresar</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
