@@ -1,0 +1,9 @@
+:host ::ng-deep .p-dialog .p-dialog-header {
+    background-color: #ffffff !important;
+    color: #1e293b !important;
+    /* slate-800 */
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+    background-color: #ffffff !important;
+}

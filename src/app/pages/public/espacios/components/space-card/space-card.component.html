@@ -1,75 +1,115 @@
-<div class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 group cursor-pointer border border-slate-100 flex flex-col h-full overflow-hidden"
-    (click)="verDetalle(space.id)">
+<p-card [style]="{'background-color': 'white'}"
+    styleClass="h-full border-none shadow-md hover:shadow-2xl transition-all duration-300 rounded-xl overflow-hidden group bg-white">
 
-    <!-- Image Section -->
-    <div class="h-56 relative overflow-hidden">
-        <img class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-            src="{{space.image}}" alt="{{space.name}}">
-        <!-- Gradient Overlay -->
-        <div
-            class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        </div>
+    <!-- Header Image Area -->
+    <ng-template pTemplate="header">
+        <div class="relative h-56 overflow-hidden cursor-pointer" (click)="verDetalle(space.uuid)">
+            <img [src]="space.image || 'https://primefaces.org/cdn/primeng/images/card-ng.jpg'" [alt]="space.name"
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
 
-        <!-- Status Badge -->
-        <div class="absolute top-4 right-4 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5 backdrop-blur-sm bg-opacity-90"
-            [class.bg-emerald-500]="space.available" [class.bg-red-500]="!space.available">
-            <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-            {{ space.available ? 'Disponible' : 'Reservado' }}
-        </div>
-    </div>
-
-    <!-- Content Section -->
-    <div class="p-5 flex-1 flex flex-col">
-        <div class="mb-4 flex-1">
-            <div class="text-xs font-semibold text-emerald-600 mb-1 uppercase tracking-wide">{{space.type || 'Espacio'}}
+            <!-- Gradient Overlay -->
+            <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-40 group-hover:opacity-60 transition-opacity">
             </div>
-            <h3 class="text-xl font-bold text-slate-800 group-hover:text-emerald-700 transition-colors mb-2">
-                {{space.name}}</h3>
-            <p class="text-sm text-slate-500 flex items-center">
-                <svg class="w-4 h-4 mr-1.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+            <!-- Price Badge (Bottom Left) -->
+            <div
+                class="absolute bottom-3 left-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm flex items-baseline gap-1">
+                <span class="text-emerald-700 font-bold text-lg">{{ space.price | currency:'USD':'symbol':'1.0-0'
+                    }}</span>
+                <span class="text-xs text-slate-400 font-medium">/hora</span>
+            </div>
+
+            <!-- Status Badge (Top Right) -->
+            <div class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm flex items-center gap-1.5 backdrop-blur-md transition-colors duration-300"
+                [class.bg-emerald-500]="space.status === 'disponible'" [class.bg-rose-500]="space.status === 'ocupado'"
+                [class.bg-opacity-90]="true">
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                {{ space.status.toUpperCase() }}
+            </div>
+        </div>
+    </ng-template>
+
+    <!-- Body Content -->
+    <div class="flex flex-col gap-4 pt-2 px-3">
+
+        <!-- Headers -->
+        <div class="">
+            <div class="flex items-center justify-between mb-2 ">
+                <span
+                    class="text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-100">
+                    {{space.type}}
+                </span>
+                <div class="flex items-center text-amber-400 text-xs gap-1">
+                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
+                        <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    <span class="font-bold text-slate-600">4.8</span>
+                </div>
+            </div>
+
+            <h2 class="text-xl font-bold text-slate-800 leading-tight group-hover:text-emerald-700 transition-colors cursor-pointer"
+                (click)="verDetalle(space.uuid)">
+                {{space.name}}
+            </h2>
+
+            <p class="text-slate-500 text-sm mt-2 flex items-start gap-1.5">
+                <svg class="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                {{space.location || 'Ubicación Central'}}
+                <span class="line-clamp-1">{{space.location || 'Ubicación céntrica'}}</span>
             </p>
         </div>
 
         <!-- Divider -->
-        <div class="border-t border-slate-100 my-4"></div>
+        <div class="h-px bg-slate-100 my-1"></div>
 
-        <!-- Footer Info -->
-        <div class="flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div class="bg-emerald-50 p-2 rounded-lg">
-                    <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                        </path>
+        <!-- features grid -->
+        <div class="grid grid-cols-2 gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                 </div>
-                <div>
-                    <span class="block text-xs text-slate-400 font-medium">Precio</span>
-                    <span class="text-lg font-bold text-slate-800">${{space.price}}<span
-                            class="text-sm font-normal text-slate-500">/hr</span></span>
+                <div class="flex flex-col">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase">Capacidad</span>
+                    <span class="text-sm font-semibold text-slate-700">{{space.capacity}} Personas</span>
                 </div>
             </div>
-
-            <div class="flex items-center gap-2">
-                <div class="bg-slate-50 p-2 rounded-lg group-hover:bg-emerald-50 transition-colors duration-300">
-                    <svg class="w-5 h-5 text-slate-500 group-hover:text-emerald-600 transition-colors duration-300"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Dynamic Feature based on type (example) -->
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-                        </path>
+                            d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </div>
-                <div class="text-right">
-                    <span class="block text-xs text-slate-400 font-medium">Capacidad</span>
-                    <span class="text-sm font-bold text-slate-800">{{space.capacity}} pax</span>
+                <div class="flex flex-col">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase">Servicios</span>
+                    <span class="text-sm font-semibold text-slate-700">WiFi Alta Vel.</span>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Footer Actions -->
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end mt-3">
+            <button (click)="verDetalle(space.uuid)"
+                class="px-2 py-1 rounded-md bg-emerald-500 text-white hover:bg-emerald-600 transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                Reservar
+            </button>
+        </div>
+    </ng-template>
+</p-card>

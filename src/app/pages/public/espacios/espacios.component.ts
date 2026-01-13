@@ -18,28 +18,33 @@ export class EspaciosComponent implements OnInit {
   mockSpaces: any[] = [];
   loading: boolean = true;
 
-  ngOnInit(): void {
-    console.log('ngOnInit');
+  ngOnInit(): void {    
     this.loadSpaces();
   }
 
   loadSpaces(): void {
-    this.spacesService.getSpaces().then((spaces) => {
+    this.spacesService.getAll().then((spaces) => {
       this.mockSpaces = spaces;
       this.loading = false;
     });
-
-    console.log("espacios cargados")
   }
 
   handleSearchSpaces(filtros: Filtros): void {
     this.loading = true;
     this.mockSpaces = [];
 
-    console.log(filtros.capacidad > 0 , filtros.precio > 0 , filtros.servicios.length > 0 , filtros.tipo)
+    console.log(filtros.capacidad > 0, filtros.precio > 0, filtros.amenidades.length > 0, filtros.tipo)
 
-    if (filtros.capacidad > 0 || filtros.precio > 0 || filtros.servicios.length > 0 || filtros.tipo) {
-      this.spacesService.getSpaces(filtros).then((spaces) => {
+    if (filtros.capacidad > 0 || filtros.precio > 0 || filtros.amenidades.length > 0 || filtros.tipo || filtros.fecha) {
+      // Map legacy filters to API filters
+      const apiFilters: any = {};
+
+      if (filtros.capacidad > 0) apiFilters.capacity = filtros.capacidad;
+      // if (filtros.precio > 0) apiFilters.price = filtros.precio; // Assuming API supports price
+      if (filtros.tipo) apiFilters.spaces_type_id = filtros.tipo; // Assuming backend handles this mapping or ID is passed
+      if (filtros.fecha) apiFilters.fecha_deseada = filtros.fecha;
+
+      this.spacesService.getAll(apiFilters).then((spaces) => {
         this.mockSpaces = spaces;
         this.loading = false;
       });

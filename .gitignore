@@ -40,4 +40,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+prototipo/node_modules
 prototipo
+.opencode

@@ -2,5 +2,6 @@ export type Filtros = {
     tipo: string;
     precio: number;
     capacidad: number;
-    servicios: string[];
+    amenidades: string[];
+    fecha: string;
 }

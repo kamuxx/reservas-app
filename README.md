@@ -1,59 +1,69 @@
-# ReservasApp
+# Reservas App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.19.
+Aplicación de gestión de reservas de espacios diseñada para facilitar la administración y el uso de espacios compartidos.
 
-## Development server
+## Características Principales
 
-To start a local development server, run:
+*   **Gestión de Espacios**: Visualización y detalle de espacios disponibles.
+*   **Mis Reservas**: Sección para que los usuarios gestionen sus reservas actuales.
+*   **Autenticación**: Sistema seguro de login y protección de rutas.
+*   **Calendario**: Interfaz intuitiva para seleccionar fechas y horarios.
+
+## Tecnologías Utilizadas
+
+Este proyecto está construido con las últimas tecnologías web:
+
+*   **Framework**: [Angular](https://angular.io/) (^19.2.0)
+*   **UI Library**: [PrimeNG](https://primeng.org/) (^19.1.4)
+*   **Styling**: [Tailwind CSS](https://tailwindcss.com/) (^4.1.18)
+*   **Icons**: PrimeIcons
+
+## Requisitos Previos
+
+Asegúrate de tener instalado:
+*   [Node.js](https://nodejs.org/) (versión compatible con Angular 19)
+*   [npm](https://www.npmjs.com/) (generalmente incluido con Node.js)
+*   Angular CLI: `npm install -g @angular/cli`
+
+## Instalación
+
+1.  Clona el repositorio:
+    ```bash
+    git clone <url-del-repositorio>
+    ```
+2.  Navega al directorio del proyecto:
+    ```bash
+    cd reservas-app
+    ```
+3.  Instala las dependencias:
+    ```bash
+    npm install
+    ```
+
+## Implementación y Uso
+
+### Servidor de Desarrollo
+
+Para iniciar el servidor de desarrollo, ejecuta:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Navega a `http://localhost:4200/`. La aplicación se recargará automáticamente si cambias algún archivo fuente.
 
-## Code scaffolding
+### Construcción (Build)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+Para construir el proyecto (los artefactos de compilación se almacenarán en el directorio `dist/`):
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Tests
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Para ejecutar las pruebas unitarias:
 
 ```bash
 ng test
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

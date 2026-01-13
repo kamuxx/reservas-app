@@ -1,0 +1,178 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-col gap-8">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900">Mis Reservas</h1>
+                <p class="text-slate-500 mt-1">Gestiona tus próximos eventos y revisa tu historial.</p>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="flex p-1 space-x-1 bg-slate-100/80 backdrop-blur-sm rounded-xl">
+                <button
+                    class="w-full sm:w-auto py-2.5 px-5 text-sm font-medium leading-5 rounded-lg transition-all duration-200 focus:outline-none"
+                    [class.bg-white]="activeStatus === ''" [class.text-emerald-700]="activeStatus === ''"
+                    [class.shadow-sm]="activeStatus === ''" [class.text-slate-600]="activeStatus !== ''"
+                    [class.hover:text-slate-900]="activeStatus !== ''" (click)="loadReservations('')">
+                    Todas
+                </button>
+                <button
+                    class="w-full sm:w-auto py-2.5 px-5 text-sm font-medium leading-5 rounded-lg transition-all duration-200 focus:outline-none"
+                    [class.bg-white]="activeStatus === 'Confirmada'"
+                    [class.text-emerald-700]="activeStatus === 'Confirmada'"
+                    [class.shadow-sm]="activeStatus === 'Confirmada'"
+                    [class.text-slate-600]="activeStatus !== 'Confirmada'"
+                    [class.hover:text-slate-900]="activeStatus !== 'Confirmada'"
+                    (click)="loadReservations('Confirmada')">
+                    Próximas
+                </button>
+                <button
+                    class="w-full sm:w-auto py-2.5 px-5 text-sm font-medium leading-5 rounded-lg transition-all duration-200 focus:outline-none"
+                    [class.bg-white]="activeStatus === 'Completada'"
+                    [class.text-blue-700]="activeStatus === 'Completada'"
+                    [class.shadow-sm]="activeStatus === 'Completada'"
+                    [class.text-slate-600]="activeStatus !== 'Completada'"
+                    [class.hover:text-slate-900]="activeStatus !== 'Completada'"
+                    (click)="loadReservations('Completada')">
+                    Historial
+                </button>
+            </div>
+        </div>
+
+        <!-- Content -->
+        @if(loading){
+        <div class="flex justify-center items-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+        </div>
+        } @else if(reservations.length === 0) {
+        <div class="flex flex-col items-center justify-center py-20 space-y-4">
+            <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center">
+                <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                    </path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-medium text-slate-900">No tienes reservas</h3>
+            <p class="text-slate-500">¿Buscas un espacio? Explora nuestras opciones.</p>
+            <button class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                routerLink="/espacios">
+                Explorar Espacios
+            </button>
+        </div>
+        } @else {
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            @for (reservation of reservations; track reservation.uuid) {
+            <p-card [style]="{'background-color': 'white'}"
+                styleClass="h-full border-none shadow-md hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden group bg-white">
+
+                <!-- Header Image -->
+                <ng-template pTemplate="header">
+                    <div class="relative h-48 overflow-hidden">
+                        <img [src]="reservation.space?.images?.[0] || 'https://primefaces.org/cdn/primeng/images/card-ng.jpg'"
+                            [alt]="reservation.space?.name"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-40">
+                        </div>
+
+                        <!-- Status Badge -->
+                        <div class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm flex items-center gap-1.5 backdrop-blur-md"
+                            [ngClass]="getStatusColor(reservation.status?.name || '')">
+                            <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                            {{ reservation.status?.name }}
+                        </div>
+                    </div>
+                </ng-template>
+
+                <!-- Body -->
+                <div class="flex flex-col gap-4 pt-2 px-1">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800 leading-tight mb-1">
+                            {{ reservation.space?.name || 'Espacio Reservado' }}
+                        </h2>
+                        <p class="text-emerald-600 font-medium text-sm">
+                            {{ reservation.event_name }}
+                        </p>
+                    </div>
+
+                    <div class="h-px bg-slate-100 my-1"></div>
+
+                    <!-- Details Grid -->
+                    <div class="grid grid-cols-2 gap-y-4 gap-x-2">
+                        <div class="flex items-start gap-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-slate-400">Fecha</p>
+                                <p class="text-sm font-semibold text-slate-700">{{ reservation.event_date }}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div
+                                class="w-8 h-8 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-slate-400">Horario</p>
+                                <p class="text-sm font-semibold text-slate-700">
+                                    {{ formatTime(reservation.start_time) }} - {{ formatTime(reservation.end_time) }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 col-span-2">
+                            <div
+                                class="w-8 h-8 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-slate-400">Ubicación</p>
+                                <p class="text-sm font-semibold text-slate-700 line-clamp-1">
+                                    San Cristóbal, Táchira
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="h-px bg-slate-100 my-1"></div>
+
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-slate-400">Total</p>
+                            <p class="text-lg font-bold text-emerald-600">{{ reservation.event_price | currency:'USD' }}
+                            </p>
+                        </div>
+
+                        <button pButton label="Ver Detalle" icon="pi pi-eye" class="p-button-outlined p-button-sm"
+                            (click)="showDialog(reservation)">
+                        </button>
+                    </div>
+                </div>
+            </p-card>
+            }
+        </div>
+        }
+    </div>
+
+    <!-- Details Modal -->
+    <app-reserva-detalle [(visible)]="visible" [reservation]="selectedReservation"
+        (onUpdate)="loadReservations(activeStatus)">
+    </app-reserva-detalle>
+
+</div>
