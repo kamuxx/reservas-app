@@ -130,12 +130,48 @@
             </div>
 
             <!-- Actions -->
-            <div *ngIf="!canEdit(reservation) && reservation.status?.name !== 'Cancelada'"
+            <div *ngIf="!canEdit(reservation) && !isPastReservation && reservation.status?.name !== 'Cancelada'"
                 class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-3">
                 <i class="pi pi-info-circle text-amber-500 mt-0.5"></i>
                 <div class="text-xs text-amber-800">
                     <span class="font-bold block mb-1">Modificación cerrada</span>
                     Las opciones de editar o cancelar solo están disponibles hasta 1 hora antes del evento.
+                </div>
+            </div>
+
+            <!-- Review Section (Past Events) -->
+            <div *ngIf="isPastReservation"
+                class="bg-slate-50 p-5 rounded-xl border border-slate-100 mt-4 animate-fade-in-up">
+                <h3 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="pi pi-star text-yellow-500"></i>
+                    Califica tu experiencia
+                </h3>
+
+                <div class="mb-5">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Puntuación</label>
+                    <div class="flex items-center gap-4">
+                        <div class="flex-1">
+                            <p-slider [(ngModel)]="reviewForm.rating" [min]="1" [max]="5" [step]="1"></p-slider>
+                        </div>
+                        <span class="font-bold text-xl text-emerald-600 w-8 text-center">{{reviewForm.rating}}</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-400 mt-1 px-1">
+                        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Comentario</label>
+                    <textarea rows="3" pInputTextarea [(ngModel)]="reviewForm.comment"
+                        class="w-full text-sm p-3 border-slate-200 rounded-lg focus:border-emerald-500 focus:ring-emerald-500 bg-white! text-slate-900!"
+                        placeholder="Cuéntanos qué te pareció el espacio..."></textarea>
+                </div>
+
+                <div class="flex justify-end">
+                    <button pButton label="Enviar Reseña" icon="pi pi-send"
+                        class="p-button-sm bg-emerald-600 border-none hover:bg-emerald-700 font-bold px-4"
+                        (click)="saveReview()">
+                    </button>
                 </div>
             </div>
 
@@ -150,39 +186,65 @@
             </div>
         </div>
 
-        <!-- Edit Mode -->
+        <!-- Edit Mode (Future Only) -->
         <div *ngIf="isEditing" class="flex flex-col gap-4">
+
+            <!-- Calendar View -->
+            <div class="bg-white border border-slate-200 rounded-xl p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex gap-1">
+                        <button class="p-1 hover:bg-slate-100 rounded" mwlCalendarPreviousView [view]="view"
+                            [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
+                            <i class="pi pi-chevron-left text-sm"></i>
+                        </button>
+                        <button class="px-2 py-1 text-xs bg-slate-100 hover:bg-slate-200 rounded font-medium"
+                            mwlCalendarToday [(viewDate)]="viewDate">Hoy</button>
+                        <button class="p-1 hover:bg-slate-100 rounded" mwlCalendarNextView [view]="view"
+                            [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
+                            <i class="pi pi-chevron-right text-sm"></i>
+                        </button>
+                    </div>
+                    <span class="text-sm font-bold text-slate-800 capitalize">{{ viewDate | date:'MMMM yyyy' }}</span>
+                </div>
+
+                <mwl-calendar-month-view [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+                    [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)">
+                </mwl-calendar-month-view>
+            </div>
+
+            <!-- Time Slots Selection -->
+            <div *ngIf="startDate" class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <h4 class="text-xs font-bold text-slate-500 uppercase mb-3 flex justify-between items-center">
+                    Horarios Disponibles
+                    <span
+                        class="normal-case font-normal bg-white px-2 py-0.5 rounded border border-slate-200 text-slate-600">{{selectedDateStr}}</span>
+                </h4>
+
+                <div class="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto pr-1">
+                    <div *ngFor="let time of timeOptions" [ngClass]="getSlotClasses(time)" (click)="selectTime(time)"
+                        class="px-2 py-2 rounded text-xs text-center border transition-all select-none">
+                        {{time}}
+                    </div>
+                </div>
+                <div class="mt-2 text-center text-xs text-slate-400" *ngIf="!editForm.start_time">
+                    Selecciona hora de inicio y fin
+                </div>
+                <div class="mt-2 text-center font-bold text-emerald-600 text-sm"
+                    *ngIf="editForm.start_time && editForm.end_time">
+                    {{editForm.start_time}} - {{editForm.end_time}}
+                </div>
+            </div>
+
             <div class="flex flex-col gap-2">
                 <label class="text-sm font-medium text-slate-700">Nombre del Evento</label>
                 <input type="text" pInputText [(ngModel)]="editForm.event_name" class="w-full">
             </div>
 
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-medium text-slate-700">Fecha del Evento</label>
-                <input type="date" pInputText [(ngModel)]="editForm.event_date" class="w-full">
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div class="flex flex-col gap-2">
-                    <label class="text-sm font-medium text-slate-700">Hora Inicio</label>
-                    <input type="time" pInputText [(ngModel)]="editForm.start_time" class="w-full">
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label class="text-sm font-medium text-slate-700">Hora Fin</label>
-                    <input type="time" pInputText [(ngModel)]="editForm.end_time" class="w-full">
-                </div>
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-medium text-slate-700">Asistentes</label>
-                <input type="number" pInputText [(ngModel)]="editForm.attendees" class="w-full" disabled>
-                <small class="text-slate-400">Capacidad máxima del espacio.</small>
-            </div>
-
             <div class="flex gap-3 mt-4 justify-end">
                 <button pButton label="Cancelar" class="p-button-text text-slate-500" (click)="cancelEdit()"></button>
                 <button pButton label="Guardar Cambios" class="bg-emerald-600 border-none hover:bg-emerald-700"
-                    (click)="saveReservation()"></button>
+                    [disabled]="!editForm.start_time || !editForm.end_time" (click)="saveReservation()">
+                </button>
             </div>
         </div>
 

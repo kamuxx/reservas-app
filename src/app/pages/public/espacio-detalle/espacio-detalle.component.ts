@@ -233,9 +233,17 @@ export class EspacioDetalleComponent implements OnInit {
       this.endDate = date;
       this.selectedDate = `${this.formatDate(this.startDate)} al ${this.formatDate(this.endDate)}`;
     } else if (isSameDay(date, this.startDate)) {
-      // Clicking same day de-selects? No, just keep it as single day
-      this.endDate = undefined;
-      this.selectedDate = this.formatDate(date);
+      if (this.endDate) {
+        this.endDate = undefined;
+        this.selectedDate = this.formatDate(date);
+      } else {
+        this.startDate = undefined;
+        this.selectedDate = '';
+        this.availableSlots = [];
+        this.selectedStartTime = '';
+        this.selectedEndTime = '';
+        this.totalPrice = 0;
+      }
     }
 
     this.updateCalendarEvents();

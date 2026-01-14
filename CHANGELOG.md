@@ -20,3 +20,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Addressed various bugs and improved stability in the reservation flow.
+- [EspacioDetalle] Fixed a bug where events remained visible after deselecting a day in the calendar.
+
+### Added
+- [Reviews] Implemented review submission functionality in `ReservaDetalleComponent`.
+- [Services] Added `addComment` method to `SpacesService` for posting reviews.

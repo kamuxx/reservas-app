@@ -146,5 +146,24 @@ export class SpacesService extends BaseService<Space> {
       throw this.handleError(error);
     }
   }
-}
 
+  /**
+   * Add a comment/review to a space.
+   * Calls POST /api/spaces/{uuid}/comments
+   */
+  async addComment(uuid: string, data: { rating: number, comment: string }): Promise<any> {
+    try {
+      const url = `${this.apiUrl}${this.getEndpoint()}/${uuid}/comments`;
+
+      if (environment.enableDebug) {
+        console.log(`POST ${url}`, data);
+      }
+
+      const response: any = await this.http.post(url, data).toPromise();
+      return response;
+    } catch (error) {
+      console.error('Error adding comment', error);
+      throw this.handleError(error);
+    }
+  }
+}
