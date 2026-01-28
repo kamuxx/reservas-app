@@ -2,8 +2,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <div class="flex items-center">
-                <a href="#/"
-                    class="flex-shrink-0 font-bold text-xl tracking-wider hover:text-gray-200 transition-colors">
+                <a href="#/" class="shrink-0 font-bold text-xl tracking-wider hover:text-gray-200 transition-colors">
                     RESERVAS APP
                 </a>
                 <div class="hidden md:block ml-10">
@@ -27,6 +26,10 @@
                     @if(isLoggedIn$ | async){
                     @if(user$ | async; as user){
                     <span class="text-sm mr-4 text-gray-300">Hola, {{ user.name }}</span>
+                    <a [routerLink]="['/change-password']" title="Cambiar Contraseña"
+                        class="bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-md text-sm font-medium transition-colors mr-2 text-white flex items-center">
+                        <i class="pi pi-key"></i>
+                    </a>
                     <button id="logout-btn" (click)="logout()"
                         class="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Salir</button>
                     }

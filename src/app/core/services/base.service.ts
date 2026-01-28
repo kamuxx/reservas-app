@@ -6,11 +6,11 @@ import { MessageService } from 'primeng/api';
 import { map, catchError, lastValueFrom, throwError } from 'rxjs';
 
 export interface IBaseHttpService<T> {
-  get(params?: any): Promise<T[]>;
-  get(id: string): Promise<T>;
-  post(data: Partial<T>): Promise<T>;
-  put(id: string, data: Partial<T>): Promise<T>;
-  delete(id: string): Promise<void>;
+  get(params?: any, isAdmin?: boolean): Promise<T[]>;
+  get(id: string, isAdmin?: boolean): Promise<T>;
+  post(data: Partial<T>, isAdmin?: boolean): Promise<T>;
+  put(id: string, data: Partial<T>, isAdmin?: boolean): Promise<T>;
+  delete(id: string, isAdmin?: boolean): Promise<void>;
 }
 
 @Injectable({
@@ -22,6 +22,8 @@ export abstract class BaseService<T> implements IBaseHttpService<T> {
   protected messageService = inject(MessageService);
 
   abstract getEndpoint(): string;
+  abstract getEndpointAdmin(): string;
+
   abstract transformResponse(data: any): T;
 
   protected buildParams(params?: any): HttpParams {
@@ -39,13 +41,15 @@ export abstract class BaseService<T> implements IBaseHttpService<T> {
   }
 
   /**
-   * GET request - Can be used for fetching a list (with params) or a single item (with ID)
+   * GET request - Can be used for fetching a list (with params) or a single item (with ID).
+   * Supports Generic Admin Routing via isAdmin flag.
    */
-  async get(id: string): Promise<T>;
-  async get(params?: any): Promise<T[]>;
-  async get(idOrParams?: any): Promise<T | T[]> {
+  async get(id: string, isAdmin?: boolean): Promise<T>;
+  async get(params?: any, isAdmin?: boolean): Promise<T[]>;
+  async get(idOrParams?: any, isAdmin: boolean = false): Promise<T | T[]> {
     try {
-      let url = `${this.apiUrl}${this.getEndpoint()}`;
+      const endpoint = isAdmin ? this.getEndpointAdmin() : this.getEndpoint();
+      let url = `${this.apiUrl}${endpoint}`;
 
       // If argument is a string, it's an ID -> GET /id
       if (typeof idOrParams === 'string') {
@@ -66,7 +70,7 @@ export abstract class BaseService<T> implements IBaseHttpService<T> {
 
       // If argument is object or undefined, it's params -> GET /?params
       const httpParams = this.buildParams(idOrParams);
-      if (environment.enableDebug && idOrParams) console.log(`GET ${url}`, idOrParams);
+      if (environment.enableDebug) console.log(`GET ${url}`, idOrParams || '(No params)');
 
       const response: any = await lastValueFrom(
         this.http.get<ApiResponse<T>>(url, { params: httpParams }).pipe(
@@ -75,22 +79,13 @@ export abstract class BaseService<T> implements IBaseHttpService<T> {
         )
       );
 
-      console.log({ response })
+      // console.log({ response });
 
       if (response) {
         if (Array.isArray(response.data)) {
-          return response.data.map((item: any) => {
-            item = this.transformResponse(item)
-            console.log({ item })
-            return item;
-          });
+          return response.data.map((item: any) => this.transformResponse(item));
         } else if (response.data && Array.isArray(response.data.data)) {
-          return response.data.data.map((item: any) => {
-            console.log({ item_before: item })
-            item = this.transformResponse(item)
-            console.log({ item_after: item })
-            return item;
-          });
+          return response.data.data.map((item: any) => this.transformResponse(item));
         }
       }
 
@@ -101,9 +96,11 @@ export abstract class BaseService<T> implements IBaseHttpService<T> {
     }
   }
 
-  async post(data: Partial<T>): Promise<T> {
+  async post(data: Partial<T>, isAdmin: boolean = false): Promise<T> {
     try {
-      const url = `${this.apiUrl}${this.getEndpoint()}`;
+      const endpoint = isAdmin ? this.getEndpointAdmin() : this.getEndpoint();
+      const url = `${this.apiUrl}${endpoint}`;
+
       if (environment.enableDebug) console.log(`POST ${url}`, data);
 
       const response = await this.http.post<ApiResponse<T>>(url, data).toPromise();
@@ -119,9 +116,11 @@ export abstract class BaseService<T> implements IBaseHttpService<T> {
     }
   }
 
-  async put(id: string, data: Partial<T>): Promise<T> {
+  async put(id: string, data: Partial<T>, isAdmin: boolean = false): Promise<T> {
     try {
-      const url = `${this.apiUrl}${this.getEndpoint()}/${id}`;
+      const endpoint = isAdmin ? this.getEndpointAdmin() : this.getEndpoint();
+      const url = `${this.apiUrl}${endpoint}/${id}`;
+
       if (environment.enableDebug) console.log(`PUT ${url}`, data);
 
       const response = await this.http.put<ApiResponse<T>>(url, data).toPromise();
@@ -137,9 +136,11 @@ export abstract class BaseService<T> implements IBaseHttpService<T> {
     }
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string, isAdmin: boolean = false): Promise<void> {
     try {
-      const url = `${this.apiUrl}${this.getEndpoint()}/${id}`;
+      const endpoint = isAdmin ? this.getEndpointAdmin() : this.getEndpoint();
+      const url = `${this.apiUrl}${endpoint}/${id}`;
+
       if (environment.enableDebug) console.log(`DELETE ${url}`);
 
       await this.http.delete(url).toPromise();

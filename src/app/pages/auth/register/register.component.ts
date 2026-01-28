@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, FormGroup, AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
+import { Observable, of, map, catchError } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -16,6 +17,18 @@ import { MessageService } from 'primeng/api';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { RegisterRequest } from '../../../core/models';
+
+/**
+ * Regex for E.164 phone number validation.
+ * Allows optional '+' prefix followed by 1-15 digits.
+ */
+const PHONE_PATTERN = /^\+?[1-9]\d{1,14}$/;
+
+/**
+ * Regex for Strong Password.
+ * Requires at least one lowercase letter, one uppercase letter, and one digit.
+ */
+const PASSWORD_STRENGTH_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
 
 @Component({
   selector: 'app-register',
@@ -49,7 +62,7 @@ export class RegisterComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private messageService: MessageService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -58,77 +71,89 @@ export class RegisterComponent implements OnInit {
   private initializeForm(): void {
     this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern(/^\+?[1-9]\d{1,14}$/)]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)]],
+      email: ['', [Validators.required, Validators.email], [this.emailAvailabilityValidator()]],
+      phone: ['', [Validators.required, Validators.pattern(PHONE_PATTERN)]],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(PASSWORD_STRENGTH_PATTERN)]],
       password_confirmation: ['', [Validators.required]]
     }, { validator: this.passwordMatchValidator });
   }
 
-  passwordMatchValidator(form: FormGroup) {
-    const password = form.get('password');
-    const confirmPassword = form.get('password_confirmation');
+  passwordMatchValidator(form: AbstractControl): ValidationErrors | null {
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('password_confirmation')?.value;
 
-    if (password?.value !== confirmPassword?.value) {
-      confirmPassword?.setErrors({ passwordMismatch: true });
+    if (password !== confirmPassword) {
+      form.get('password_confirmation')?.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
     }
 
     return null;
   }
 
+  emailAvailabilityValidator(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      if (!control.value) {
+        return of(null);
+      }
+      return this.authService.checkEmailAvailability(control.value).pipe(
+        map(isAvailable => (isAvailable ? null : { emailTaken: true })),
+        catchError(() => of(null))
+      );
+    };
+  }
+
   onSubmit(): void {
     if (this.registerForm.invalid || this.isLoading) {
-      Object.keys(this.registerForm.controls).forEach(key => {
-        this.registerForm.get(key)?.markAsTouched();
-      });
+      this.markFormGroupTouched(this.registerForm);
       return;
     }
 
     this.isLoading = true;
-
-    const registerData: RegisterRequest = {
-      name: this.registerForm.value.name,
-      email: this.registerForm.value.email,
-      password: this.registerForm.value.password,
-      password_confirmation: this.registerForm.value.password_confirmation,
-      phone: this.registerForm.value.phone
-    };
+    const registerData: RegisterRequest = this.registerForm.value;
 
     this.authService.register(registerData)
-      .then(() => {
-        this.messageService.add({
-          severity: 'success',
-          summary: '¡Registro exitoso!',
-          detail: 'Redirigiendo al login...',
-          life: 3000
-        });
-        
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 2000);
-      })
-      .catch((error) => {
-        this.isLoading = false;
-        
-        let errorMsg = 'Error al registrar usuario. Intenta nuevamente.';
-        if (error.status === 422) {
-          if (error.error?.errors?.email) {
-            errorMsg = 'Este email ya está registrado';
-          } else {
-            errorMsg = 'Error de validación. Por favor revisa los datos.';
-          }
-        }
-        
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: errorMsg,
-          life: 3000
-        });
-      });
+      .then(() => this.handleRegistrationSuccess())
+      .catch((error) => this.handleRegistrationError(error));
   }
 
+  private markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+    });
+  }
+
+  private handleRegistrationSuccess(): void {
+    this.messageService.add({
+      severity: 'success',
+      summary: '¡Registro exitoso!',
+      detail: 'Redirigiendo al login...',
+      life: 3000
+    });
+
+    // "Reloj de arena digital" (Timer)
+    setTimeout(() => this.router.navigate(['/login']), 2000);
+  }
+
+  private handleRegistrationError(error: any): void {
+    this.isLoading = false;
+    let errorMsg = 'Error al registrar usuario. Intenta nuevamente.';
+
+    // Check for specific error status
+    if (error.status === 422) {
+      errorMsg = error.error?.errors?.email
+        ? 'Este email ya está registrado'
+        : 'Error de validación. Por favor revisa los datos.';
+    }
+
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: errorMsg,
+      life: 3000
+    });
+  }
+
+  // Getters for template access
   get name() { return this.registerForm.get('name'); }
   get email() { return this.registerForm.get('email'); }
   get phone() { return this.registerForm.get('phone'); }

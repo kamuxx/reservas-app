@@ -1,126 +1,335 @@
-/* Admin Layout Styles */
-:host {
-  display: block;
-}
+/* ============================================
+   RESPONSIVE ADMIN LAYOUT (FLEXBOX)
+   ============================================ */
 
-/* Sidebar Styles */
-.bg-slate-900 {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-}
-
-.bg-slate-800 {
-  background: rgba(30, 41, 59, 0.95);
-}
-
-/* Navigation Links */
-a[routerLink] {
+/* Contenedor Principal */
+#admin-layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
   position: relative;
-  overflow: hidden;
 }
 
-a[routerLink]:hover {
-  transform: translateX(4px);
-}
+/* 
+   SIDEBAR AREA 
+   ------------
+   Móvil: Fixed overlay, hidden by default.
+   Desktop: Relative/Static, always visible.
+*/
+.sidebar-area {
+  width: 280px;
+  /* Ancho estándar fijo */
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-a[routerLinkActive="bg-emerald-600"] {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-}
-
-a[routerLinkActive="bg-emerald-600"]::before {
-  content: '';
-  position: absolute;
+  /* Mobile Style (Default) */
+  position: fixed;
+  top: 0;
   left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 24px;
-  background-color: #ffffff;
-  border-radius: 0 2px 2px 0;
+  height: 100%;
+  border-right: 1px solid rgba(16, 185, 129, 0.1);
 }
 
-/* Header Styles */
-header {
-  backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.95);
+/* CONTENIDO PRINCIPAL */
+.content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  position: relative;
+  z-index: 10;
+  transition: margin-left 0.3s ease;
 }
 
-/* Button Styles */
-.p-button-text {
-  transition: all 0.3s ease;
-}
+/* ============================================
+   BREAKPOINTS & RESPONSIVENESS
+   ============================================ */
 
-.p-button-text:hover {
-  background-color: rgba(16, 185, 129, 0.1);
-  border-radius: 8px;
-}
-
-/* Avatar Styles */
-.p-avatar {
-  border: 2px solid #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Menu Styles */
-.p-tieredmenu {
-  min-width: 200px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  border: none;
-  overflow: hidden;
-}
-
-.p-tieredmenu .p-menuitem-link {
-  transition: all 0.3s ease;
-}
-
-.p-tieredmenu .p-menuitem-link:hover {
-  background-color: #f0fdf4;
-  color: #166534;
-  transform: translateX(4px);
-}
-
-.p-tieredmenu .p-menuitem-separator {
-  margin: 8px 12px;
-  border-color: #e5e7eb;
-}
-
-/* Badge Styles */
-.p-badge {
-  font-weight: 600;
-  font-size: 0.625rem;
-  padding: 2px 6px;
-  min-width: 18px;
-  height: 18px;
-}
-
-/* Responsive Sidebar */
-@media (max-width: 768px) {
-  .w-64 {
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100vh;
-    z-index: 50;
-    transform: translateX(-100%);
+/* Desktop Rules (lg: 1024px+) */
+@media (min-width: 1024px) {
+  .sidebar-area {
+    position: relative;
+    /* Ya no es fixed */
+    transform: none !important;
+    /* Siempre visible, ignora la clase de ocultar */
   }
 
-  .w-16 {
-    transform: translateX(-100%);
+  /* Logotipo header oculto en desktop si ya está en sidebar */
+  .mobile-toggle {
+    display: none;
   }
 }
 
-/* Transition Animations */
-.transition-all {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* Mobile/Tablet Rules (< 1024px) */
+@media (max-width: 1023.9px) {
+
+  /* Cuando el sidebar está oculto */
+  .sidebar-area.closed {
+    transform: translateX(-100%);
+  }
+
+  /* Cuando el sidebar está visible */
+  .sidebar-area.open {
+    transform: translateX(0);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  }
 }
 
-/* Logo Animation */
-.h-10.w-10 {
-  transition: all 0.3s ease;
+/* ============================================
+   ESTILOS EXISTENTES
+   ============================================ */
+
+#admin-layout::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+  z-index: 1;
+  pointer-events: none;
 }
 
-a[routerLink]:hover .h-10.w-10 {
+.glass-sidebar {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(12px);
+  border: 0 !important;
+  border-right: none !important;
+  outline: 0 !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.glass-header {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 100;
+}
+
+.logo-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.logo-icon i {
+  color: white;
+}
+
+.emerald-avatar {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.user-avatar-wrapper {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.user-avatar-wrapper:hover {
   transform: scale(1.1);
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.glass-menubar.p-menubar {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  width: auto;
+}
+
+/* Eliminar bordes de TODOS los elementos del menubar */
+.glass-menubar *,
+.glass-menubar .p-menubar-root-list,
+.glass-menubar .p-menuitem,
+.glass-menubar .p-menuitem-content,
+.glass-menubar .p-menuitem-link {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Botón principal del menubar (Mi Cuenta) - Mismo estilo que sidebar */
+.glass-menubar .p-menubar-root-list>.p-menuitem>.p-menuitem-link {
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.5rem !important;
+  color: #94a3b8 !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease;
+  background: transparent !important;
+  border: none !important;
+}
+
+.glass-menubar .p-menubar-root-list>.p-menuitem>.p-menuitem-link:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #e5e7eb !important;
+}
+
+/* Asegurar que el botón no tenga fondo negro cuando está activo */
+.glass-menubar .p-menubar-root-list>.p-menuitem.p-menuitem-active>.p-menuitem-link {
+  background: rgba(16, 185, 129, 0.1) !important;
+  color: #34d399 !important;
+}
+
+/* Label e iconos del dropdown - Mismo estilo que sidebar */
+.glass-menubar .p-menuitem-text,
+.glass-menubar .p-menuitem-icon {
+  color: #94a3b8 !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+}
+
+.glass-menubar .p-menuitem-link:hover .p-menuitem-text,
+.glass-menubar .p-menuitem-link:hover .p-menuitem-icon {
+  color: #e5e7eb !important;
+}
+
+/* Forzar glassmorphism en TODOS los menús desplegables */
+:host ::ng-deep .p-tieredmenu,
+:host ::ng-deep .p-menu,
+:host ::ng-deep .p-menubar-submenu,
+:host ::ng-deep .p-menubar .p-submenu-list,
+:host ::ng-deep .p-overlay {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  z-index: 1000 !important;
+}
+
+/* Items del dropdown - Mismo estilo que sidebar */
+:host ::ng-deep .p-tieredmenu .p-menuitem-link,
+:host ::ng-deep .p-menu .p-menuitem-link,
+:host ::ng-deep .p-menubar-submenu .p-menuitem-link,
+:host ::ng-deep .p-menubar .p-submenu-list .p-menuitem-link {
+  color: #94a3b8 !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Hover state - Mismo que sidebar */
+:host ::ng-deep .p-tieredmenu .p-menuitem-link:hover,
+:host ::ng-deep .p-menu .p-menuitem-link:hover,
+:host ::ng-deep .p-menubar-submenu .p-menuitem-link:hover,
+:host ::ng-deep .p-menubar .p-submenu-list .p-menuitem-link:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: #e5e7eb !important;
+}
+
+/* Iconos del dropdown - Mismo color que sidebar */
+:host ::ng-deep .p-tieredmenu .p-menuitem-icon,
+:host ::ng-deep .p-menu .p-menuitem-icon,
+:host ::ng-deep .p-menubar-submenu .p-menuitem-icon,
+:host ::ng-deep .p-menubar .p-submenu-list .p-menuitem-icon {
+  color: #94a3b8 !important;
+  font-size: 0.875rem !important;
+}
+
+/* Textos del dropdown - Mismo color que sidebar */
+:host ::ng-deep .p-tieredmenu .p-menuitem-text,
+:host ::ng-deep .p-menu .p-menuitem-text,
+:host ::ng-deep .p-menubar-submenu .p-menuitem-text,
+:host ::ng-deep .p-menubar .p-submenu-list .p-menuitem-text {
+  color: #94a3b8 !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+}
+
+/* Hover en iconos y textos */
+:host ::ng-deep .p-menuitem-link:hover .p-menuitem-icon,
+:host ::ng-deep .p-menuitem-link:hover .p-menuitem-text {
+  color: #e5e7eb !important;
+}
+
+/* Separadores */
+:host ::ng-deep .p-menu-separator,
+:host ::ng-deep .p-menuitem-separator {
+  border-top: 1px solid rgba(16, 185, 129, 0.2) !important;
+  background: transparent !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.3);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.4);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.6);
+}
+
+main {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+}
+
+aside,
+header,
+main {
+  position: relative;
+  z-index: 2;
+}
+
+.sidebar-overlay {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+}
+
+:host ::ng-deep .p-menuitem-link {
+  border-radius: 0.5rem;
+}
+
+:host ::ng-deep .p-menuitem-link:not(.p-disabled):hover {
+  background: rgba(16, 185, 129, 0.2);
+}
+
+:host ::ng-deep .p-menuitem-link-active {
+  background: rgba(16, 185, 129, 0.3);
+  border-left: 3px solid #10b981;
+}
+
+:host ::ng-deep .p-menuitem-link-active .p-menuitem-text {
+  color: #34d399;
+  font-weight: 600;
+}
+
+:host ::ng-deep .p-menuitem-link-active .p-menuitem-icon {
+  color: #34d399;
+}
+
+@media (max-width: 1024px) {
+  .user-avatar-wrapper+div {
+    display: none;
+  }
+}
+
+
+:host ::ng-deep .p-menubar-item-label {
+  color: #94a3b8 !important;
 }

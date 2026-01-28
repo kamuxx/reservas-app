@@ -38,6 +38,9 @@
           @if (email?.errors?.['email']) {
           Formato de email inválido
           }
+          @if (email?.errors?.['emailTaken']) {
+          Este correo ya está registrado
+          }
         </small>
       </div>
 

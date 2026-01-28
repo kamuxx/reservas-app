@@ -1,0 +1,211 @@
+/* Estilos para AdminSpacesComponent */
+
+:host ::ng-deep .p-dialog .p-button {
+    min-width: 4rem;
+    font-size: 0.875rem;
+}
+
+/* Estilos generales para inputs y textareas */
+:host ::ng-deep .p-inputtext,
+:host ::ng-deep .p-inputtextarea,
+:host ::ng-deep .p-inputnumber input {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border-radius: 0.5rem !important;
+    transition: all 0.3s ease !important;
+}
+
+:host ::ng-deep .p-inputtext:focus,
+:host ::ng-deep .p-inputtextarea:focus,
+:host ::ng-deep .p-inputnumber input:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2) !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Estilos para el modal moderno */
+:host ::ng-deep .modern-space-dialog {
+    background: rgba(15, 23, 42, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+    width: 100% !important;
+}
+
+:host ::ng-deep .modern-space-dialog .p-dialog-header {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(16, 185, 129, 0.2) !important;
+    padding: 1.5rem !important;
+    border-radius: 1rem 1rem 0 0 !important;
+    width: 100% !important;
+}
+
+:host ::ng-deep .modern-space-dialog .p-dialog-content {
+    background: transparent !important;
+    padding: 0 1.5rem 1.5rem 1.5rem !important;
+    border-radius: 0 0 1rem 1rem !important;
+    width: 100% !important;
+}
+
+:host ::ng-deep .modern-space-dialog .p-dialog-footer {
+    background: transparent !important;
+    border-top: 1px solid rgba(16, 185, 129, 0.2) !important;
+    padding: 1rem 1.5rem !important;
+    border-radius: 0 0 1rem 1rem !important;
+    width: 100% !important;
+    display: block !important;
+}
+
+/* Estilos para inputs dentro del modal */
+:host ::ng-deep .modern-space-dialog .p-inputtext,
+:host ::ng-deep .modern-space-dialog .p-inputtextarea,
+:host ::ng-deep .modern-space-dialog .p-inputnumber input {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border-radius: 0.5rem !important;
+    transition: all 0.3s ease !important;
+}
+
+:host ::ng-deep .modern-space-dialog .p-inputtext:focus,
+:host ::ng-deep .modern-space-dialog .p-inputtextarea:focus,
+:host ::ng-deep .modern-space-dialog .p-inputnumber input:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2) !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+:host ::ng-deep .modern-space-dialog .p-dropdown {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 0.5rem !important;
+}
+
+:host ::ng-deep .modern-space-dialog .p-dropdown .p-dropdown-label {
+    color: white !important;
+}
+
+:host ::ng-deep .modern-space-dialog .p-dropdown:not(.p-disabled):hover {
+    border-color: #10b981 !important;
+}
+
+:host ::ng-deep .modern-space-dialog .p-dropdown:not(.p-disabled).p-focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2) !important;
+}
+
+/* Panel del dropdown */
+:host ::ng-deep .modern-space-dialog .p-dropdown-panel {
+    background: rgba(15, 23, 42, 0.95) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+    border-radius: 0.5rem !important;
+}
+
+:host ::ng-deep .modern-space-dialog .p-dropdown-item {
+    color: #e5e7eb !important;
+    transition: all 0.2s ease !important;
+}
+
+:host ::ng-deep .modern-space-dialog .p-dropdown-item:hover {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: white !important;
+}
+
+/* Table Glass Styles & Overrides */
+:host ::ng-deep .p-datatable {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-header {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: none !important;
+    padding: 1.5rem !important;
+    color: white !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    background: rgba(16, 185, 129, 0.1) !important; /* Emerald Tint */
+    color: #34d399 !important; /* Emerald 400 */
+    border: none !important;
+    padding: 1rem !important;
+    font-weight: 600;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr {
+    background: transparent !important;
+    color: #e2e8f0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    transition: background-color 0.2s;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+:host ::ng-deep .p-datatable .p-sortable-column:not(.p-highlight):hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: #10b981 !important;
+}
+
+:host ::ng-deep .p-datatable .p-sortable-column.p-highlight {
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: #10b981 !important;
+}
+
+:host ::ng-deep .p-datatable .p-sortable-column .p-sortable-column-icon {
+    color: inherit !important;
+}
+
+/* Paginator Styling */
+:host ::ng-deep .p-paginator {
+    background: transparent !important;
+    border: none !important;
+    margin-top: 1rem;
+    padding: 0.5rem;
+}
+
+:host ::ng-deep .p-paginator .p-paginator-element {
+    background: transparent !important;
+    color: #94a3b8 !important;
+    border: 1px solid transparent !important;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+}
+
+:host ::ng-deep .p-paginator .p-paginator-element:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
+:host ::ng-deep .p-paginator .p-paginator-element.p-highlight {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #34d399 !important;
+    border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Global Menubar Fix (Attempt to fix via leakage if needed, or scoped) */
+/* Note: This might touch other components if they are on screen, which is desired for consistency */
+::ng-deep .p-menubar {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 0.75rem !important;
+    backdrop-filter: blur(10px);
+}
+
+::ng-deep .p-menubar .p-menuitem-link .p-menuitem-text {
+    color: white !important;
+}
+
+::ng-deep .p-menubar .p-menuitem-link:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}

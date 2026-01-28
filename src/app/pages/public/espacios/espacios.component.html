@@ -24,22 +24,16 @@
             </div>
 
             <div id="spaces-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                <!-- Cards will be injected here -->
-                <div class="col-span-full flex justify-center py-20">
-                    <div class="flex flex-col items-center">
-                        @if(loading){
-                            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600 mb-4"></div>
-                            <p class="text-slate-400 text-sm">Cargando espacios...</p>
-                        } 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            @for (space of mockSpaces; track $index) {
-                                <app-space-card class="w-full"  [space]="space"></app-space-card>
-                            }
-                        </div>
-                        
-                    </div> 
-                    
+                @if(loading){
+                <div class="col-span-full flex flex-col items-center justify-center py-20">
+                    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600 mb-4"></div>
+                    <p class="text-slate-400 text-sm">Cargando espacios...</p>
                 </div>
+                }
+
+                @for (space of mockSpaces; track $index) {
+                <app-space-card class="h-full" [space]="space"></app-space-card>
+                }
             </div>
         </div>
     </div>

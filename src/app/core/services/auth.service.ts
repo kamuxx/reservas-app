@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, map, catchError, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { environment } from '../../../environments/environment';
@@ -190,11 +190,12 @@ export class AuthService {
     });
   }
 
-  changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  changePassword(currentPassword: string, newPassword: string, newPasswordConfirmation: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.http.put(`${environment.apiUrl}/api/user/password`, {
+      this.http.post(`${environment.apiUrl}/api/auth/change-password`, {
         current_password: currentPassword,
-        new_password: newPassword
+        new_password: newPassword,
+        new_password_confirmation: newPasswordConfirmation
       })
         .pipe(
           tap(response => {
@@ -254,6 +255,14 @@ export class AuthService {
           error: (error) => reject(error)
         });
     });
+  }
+
+  checkEmailAvailability(email: string): Observable<boolean> {
+    return this.http.post<{ available: boolean }>(`${environment.apiUrl}/api/auth/check-email`, { email })
+      .pipe(
+        map(response => response.available),
+        catchError(() => of(true))
+      );
   }
 
   isAdmin(): boolean {

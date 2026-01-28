@@ -1,4 +1,19 @@
 @import 'tailwindcss';
+@import 'primeicons/primeicons.css';
+
+/* Global PrimeIcons Fix - Asegurar que todos los iconos carguen correctamente */
+.pi, 
+[class^="pi-"],
+[class*=" pi-"] {
+    font-family: 'primeicons' !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+    font-variant: normal !important;
+    text-transform: none !important;
+    line-height: 1 !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+}
 
 body {
   margin: 0;
@@ -15,3 +30,314 @@ body {
 body {
   @apply bg-gray-50 text-gray-900;
 }
+
+/* Global PrimeNG DROPDOWN Menu Overrides - Solo para dropdowns, NO sidebar */
+.p-tieredmenu,
+.p-tieredmenu *,
+.p-menubar-submenu,
+.p-menubar-submenu * {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 0 !important;
+  outline: 0 !important;
+}
+
+/* Eliminar bordes de items de menu */
+.p-menuitem-link {
+  border: 0 !important;
+  outline: 0 !important;
+}
+
+.p-menuitem-link:hover,
+.p-menuitem-link:focus {
+  background: rgba(16, 185, 129, 0.2) !important;
+  background-color: rgba(16, 185, 129, 0.2) !important;
+  color: #34d399 !important;
+}
+
+.p-menuitem-text {
+  color: #e5e7eb !important;
+}
+
+.p-menuitem-icon {
+  color: #34d399 !important;
+}
+
+/* --- Admin Layout Global Styles --- */
+
+#admin-layout .card, 
+#admin-layout .p-card,
+#admin-layout .p-dialog {
+    background: rgba(15, 23, 42, 0.4) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+    color: #e5e7eb !important;
+}
+
+#admin-layout .p-card-title,
+#admin-layout .p-card-content,
+#admin-layout h1, 
+#admin-layout h2, 
+#admin-layout h3,
+#admin-layout label,
+#admin-layout .p-dialog-title {
+    color: #ffffff !important;
+}
+
+/* Global Button & Icon Visibility Fix */
+#admin-layout .p-button {
+    border-radius: 0.5rem !important; /* Bordes más pequeños */
+    transition: all 0.3s ease !important;
+    position: relative;
+    font-size: 0.875rem !important; /* Texto más pequeño */
+    padding: 0.375rem 0.75rem !important; /* Padding estilo btn-sm */
+}
+
+/* Botones en el modal - Tamaño estilo btn-sm de Bootstrap */
+#admin-layout .p-dialog .p-button {
+    min-width: 4rem !important; /* Ancho similar a btn-sm */
+    padding: 0.375rem 0.75rem !important; /* Padding estilo btn-sm */
+    font-size: 0.875rem !important; /* Texto legible */
+    border-radius: 0.375rem !important; /* Bordes estándar */
+    height: auto !important; /* Altura automática */
+    line-height: 1.5 !important; /* Mejor legibilidad */
+}
+
+#admin-layout .p-dialog .p-button .p-button-icon {
+    font-size: 0.875rem !important; /* Iconos proporcionales */
+}
+
+#admin-layout .pi {
+    color: inherit !important; /* Mantiene el color del texto del botón */
+    font-weight: 900 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-block !important;
+    font-family: 'primeicons' !important;
+    speak: none;
+    font-style: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 0.875rem !important; /* Iconos más pequeños */
+}
+
+/* Forzar visibilidad de iconos específicos */
+#admin-layout .pi-pencil,
+#admin-layout .pi-trash,
+#admin-layout .pi-calendar,
+#admin-layout .pi-plus,
+#admin-layout .pi-chevron-left,
+#admin-layout .pi-chevron-right,
+#admin-layout .pi-download,
+#admin-layout .pi-refresh,
+#admin-layout .pi-building,
+#admin-layout .pi-dollar,
+#admin-layout .pi-chart-pie,
+#admin-layout .pi-arrow-up,
+#admin-layout .pi-clock,
+#admin-layout .pi-chevron-right,
+#admin-layout .pi-shield,
+#admin-layout .pi-bars {
+    font-family: 'primeicons' !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+    font-variant: normal !important;
+    text-transform: none !important;
+    line-height: 1 !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Botones circulares o redondeados para acciones de tabla - Tamaño btn-sm */
+#admin-layout .p-button.p-button-rounded {
+    border-radius: 50% !important;
+    width: 2.25rem !important; /* Tamaño similar a btn-sm */
+    height: 2.25rem !important; /* Tamaño similar a btn-sm */
+    padding: 0 !important;
+}
+
+#admin-layout .p-button.p-button-rounded .p-button-icon {
+    font-size: 0.75rem !important; /* Iconos proporcionales al tamaño */
+}
+
+/* Asegurar que el texto sea visible */
+#admin-layout .p-button .p-button-label {
+    font-weight: 600 !important;
+}
+
+/* Success Buttons (Emerald Theme) - Estilo btn-sm */
+#admin-layout .p-button.p-button-success,
+#admin-layout .p-button-success .p-button,
+#admin-layout .btn-nuevo-espacio {
+    background: #10b981 !important;
+    background-image: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border: 1px solid #10b981 !important;
+    color: #ffffff !important;
+    font-size: 0.875rem !important; /* Texto estilo btn-sm */
+    padding: 0.375rem 0.75rem !important; /* Padding estilo btn-sm */
+}
+
+#admin-layout .p-button.p-button-success:hover,
+#admin-layout .p-button-success .p-button:hover,
+#admin-layout .btn-nuevo-espacio:hover {
+    background: #059669 !important;
+    box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.4) !important;
+}
+
+/* Botones de acción en tablas del administrador */
+#admin-layout .p-button.p-button-outlined {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(16, 185, 129, 0.5) !important;
+    color: #34d399 !important;
+}
+
+/* Botón de editar - color azul */
+#admin-layout .p-button[icon="pi pi-pencil"].p-button-outlined {
+    border-color: rgba(59, 130, 246, 0.5) !important;
+    color: #3b82f6 !important;
+}
+
+#admin-layout .p-button[icon="pi pi-pencil"].p-button-outlined:hover {
+    background: rgba(59, 130, 246, 0.1) !important;
+    border-color: #3b82f6 !important;
+}
+
+/* Botón de eliminar - color rojo */
+#admin-layout .p-button[icon="pi pi-trash"].p-button-outlined {
+    border-color: rgba(239, 68, 68, 0.5) !important;
+    color: #ef4444 !important;
+}
+
+#admin-layout .p-button[icon="pi pi-trash"].p-button-outlined:hover {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border-color: #ef4444 !important;
+}
+
+/* Botón de calendario - color morado */
+#admin-layout .p-button[icon="pi pi-calendar"].p-button-outlined {
+    border-color: rgba(139, 92, 246, 0.5) !important;
+    color: #8b5cf6 !important;
+}
+
+#admin-layout .p-button[icon="pi pi-calendar"].p-button-outlined:hover {
+    background: rgba(139, 92, 246, 0.1) !important;
+    border-color: #8b5cf6 !important;
+}
+
+/* Text/Transparent Buttons */
+#admin-layout .p-button.p-button-text {
+    color: #34d399 !important;
+}
+
+#admin-layout .p-button.p-button-text:hover {
+    background: rgba(16, 185, 129, 0.1) !important;
+}
+
+/* Secondary Buttons */
+#admin-layout .p-button.p-button-secondary {
+    background: rgba(148, 163, 184, 0.1) !important;
+    border: 1px solid rgba(148, 163, 184, 0.3) !important;
+    color: #94a3b8 !important;
+}
+
+/* Tables in Admin */
+#admin-layout .p-datatable {
+    background: transparent !important;
+}
+
+#admin-layout .p-datatable .p-datatable-thead > tr > th {
+    background: rgba(15, 23, 42, 0.6) !important;
+    color: #34d399 !important;
+    border-color: rgba(16, 185, 129, 0.2) !important;
+    font-weight: 600 !important;
+}
+
+#admin-layout .p-datatable .p-datatable-tbody > tr {
+    background: rgba(15, 23, 42, 0.3) !important;
+    color: #e5e7eb !important;
+    transition: background 0.2s !important;
+}
+
+#admin-layout .p-datatable .p-datatable-tbody > tr:hover {
+    background: rgba(16, 185, 129, 0.1) !important;
+}
+
+#admin-layout .p-datatable .p-datatable-tbody > tr > td {
+    border-color: rgba(16, 185, 129, 0.1) !important;
+}
+
+/* Paginator */
+#admin-layout .p-paginator {
+    background: rgba(15, 23, 42, 0.4) !important;
+    border: none !important;
+    color: #94a3b8 !important;
+}
+
+#admin-layout .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #34d399 !important;
+}
+
+/* Inputs in Admin */
+#admin-layout .p-inputtext,
+#admin-layout .p-dropdown {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+    color: #e5e7eb !important;
+}
+
+#admin-layout .p-inputtext:enabled:focus,
+#admin-layout .p-dropdown:not(.p-disabled).p-focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 1px #10b981 !important;
+}
+
+/* Tooltip Overrides for Admin */
+.p-tooltip .p-tooltip-text {
+    background: rgba(15, 23, 42, 0.9) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(16, 185, 129, 0.5) !important;
+    color: #ffffff !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    padding: 0.4rem 0.8rem !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+}
+
+.p-tooltip-arrow {
+    border-top-color: rgba(16, 185, 129, 0.5) !important;
+}
+#admin-layout .p-dialog .p-dialog-header,
+#admin-layout .p-dialog .p-dialog-content,
+#admin-layout .p-dialog .p-dialog-footer {
+    background: transparent !important;
+    color: #e5e7eb !important;
+    border: none !important;
+}
+
+#admin-layout .p-dialog .p-dialog-header .p-dialog-header-icon {
+    color: #94a3b8 !important;
+}
+
+#admin-layout .p-dialog .p-dialog-header .p-dialog-header-icon:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+/* Primary Buttons */
+#admin-layout .p-button.p-button-primary {
+    background: #3b82f6 !important;
+    border: 1px solid #3b82f6 !important;
+    color: #ffffff !important;
+}
+
+/* Secondary/Info/Warning/Danger */
+#admin-layout .p-button.p-button-secondary { background: #64748b !important; border-color: #64748b !important; color: #ffffff !important; }
+#admin-layout .p-button.p-button-info { background: #3b82f6 !important; border-color: #3b82f6 !important; color: #ffffff !important; }
+#admin-layout .p-button.p-button-warning { background: #f59e0b !important; border-color: #f59e0b !important; color: #ffffff !important; }
+#admin-layout .p-button.p-button-danger { background: #ef4444 !important; border-color: #ef4444 !important; color: #ffffff !important; }

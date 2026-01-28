@@ -7,9 +7,14 @@ import { environment } from '../../environments/environment';
 })
 export class SpacesService extends BaseService<Space> {
   private readonly endpointBase = '/api/spaces';
+  private readonly endpointBaseAdmin = '/api/v1/admin/spaces';
 
   getEndpoint(): string {
     return this.endpointBase;
+  }
+
+  getEndpointAdmin(): string {
+    return this.endpointBaseAdmin;
   }
 
   transformResponse(data: any): Space {
@@ -40,6 +45,10 @@ export class SpacesService extends BaseService<Space> {
    */
   async getAll(filters?: SpaceFilters): Promise<Space[]> {
     return super.get(filters) as Promise<Space[]>;
+  }
+
+  async getAllSpacesAdmin(filters?: SpaceFilters): Promise<Space[]> {
+    return super.get(filters, true) as Promise<Space[]>;
   }
 
   /**
@@ -80,21 +89,21 @@ export class SpacesService extends BaseService<Space> {
    */
   async checkAvailability(uuid: string, startDate: string, endDate: string): Promise<AvailabilitySlot[]> {
     try {
-      // Changed to POST /api/spaces/availability as per requirement
-      const url = `${this.apiUrl}${this.getEndpoint()}/availability`;
+      const url = `${this.apiUrl}${this.getEndpoint()}/${uuid}/availability`;
 
-      const body = {
-        space_uuid: uuid,
+      const params = {
         start_date: startDate,
         end_date: endDate
       };
 
+      const httpParams = this.buildParams(params);
+
       if (environment.enableDebug) {
-        console.log(`POST ${url}`, body);
+        console.log(`GET ${url}`, params);
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response: any = await this.http.post(url, body).toPromise();
+      const response: any = await this.http.get(url, { params: httpParams }).toPromise();
 
       // Assuming response format: { status: 'success', data: [...] }
       if (response && response.status === 'success' && Array.isArray(response.data)) {
@@ -164,6 +173,57 @@ export class SpacesService extends BaseService<Space> {
     } catch (error) {
       console.error('Error adding comment', error);
       throw this.handleError(error);
+    }
+  }
+
+  /**
+   * Get all reservations for admin calendar.
+   * Calls GET /api/admin/reservations (assumed endpoint)
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async getAllReservations(): Promise<any[]> {
+    try {
+      // Assuming a dedicated admin endpoint exists or using a broad search
+      const url = `${this.apiUrl}/api/v1/admin/reservations`;
+
+      if (environment.enableDebug) {
+        console.log(`GET ${url}`);
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response: any = await this.http.get(url).toPromise();
+
+      // Transform response to CalendarEvent format if possible, 
+      // or return as is if the component handles it.
+      // The mock returned specific fields: start, end, title, color, meta.
+
+      if (response && response.data) {
+        return response.data.map((reservation: any) => {
+          // Determine color based on status (simple mapping)
+          let color = { primary: '#ad2121', secondary: '#FAE3E3' }; // Default Red
+          if (reservation.status_name === 'active' || reservation.status_name === 'confirmada') {
+            color = { primary: '#1e88e5', secondary: '#D1E8FF' }; // Blue
+          } else if (reservation.status_name === 'agendada') {
+            color = { primary: '#e3bc08', secondary: '#FDF1BA' }; // Yellow
+          }
+
+          return {
+            start: new Date(reservation.start_datetime),
+            end: new Date(reservation.end_datetime),
+            title: `${reservation.event_name} - ${reservation.user_name} (${reservation.start_time.substring(0, 5)} - ${reservation.end_time.substring(0, 5)})`,
+            color: color,
+            meta: reservation
+          };
+        });
+      }
+      return [];
+
+    } catch (error) {
+      if (environment.enableDebug) {
+        console.error('Error getting all reservations:', error);
+      }
+      // Return empty array on error to prevent breaking the UI completely for now
+      return [];
     }
   }
 }

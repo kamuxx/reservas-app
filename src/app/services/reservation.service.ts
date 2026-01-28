@@ -11,6 +11,10 @@ export class ReservationService extends BaseService<Reservation> {
     return '/api/reservations';
   }
 
+  getEndpointAdmin(): string {
+    return '/api/v1/admin/reservations';
+  }
+
   transformResponse(data: any): Reservation {
     if (data.reservation_uuid) {
       // Map flat structure from API
@@ -100,148 +104,33 @@ export class ReservationService extends BaseService<Reservation> {
       // and handles response transformation
       return await super.get(params);
     } catch (error) {
-      // Return mock data for development if API fails
-      console.error('API Error, falling back to mock data', error);
-      return this.getMockReservations(status);
+      console.error('API Error in getMyReservations', error);
+      throw error;
     }
   }
 
   async createReservation(reservationData: CreateReservationRequest): Promise<Reservation> {
-    try {
-      return await this.post(reservationData);
-    } catch (error) {
-      // Return mock reservation for development
-      return this.getMockReservation();
-    }
+    return await this.post(reservationData);
   }
 
   async cancelReservation(id: string): Promise<Reservation> {
-    try {
-      const url = `${this.apiUrl}${this.getEndpoint()}/${id}`;
-      const response = await this.http.delete(url).toPromise();
+    const url = `${this.apiUrl}${this.getEndpoint()}/${id}`;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const response: any = await this.http.delete(url).toPromise();
 
-      if (response && 'data' in response) {
-        return this.transformResponse((response as any).data);
-      }
-
-      throw new Error('Failed to cancel reservation');
-    } catch (error) {
-      // Return mock cancelled reservation
-      return this.getMockReservation();
+    if (response && 'data' in response) {
+      return this.transformResponse(response.data);
     }
+
+    throw new Error('Failed to cancel reservation');
   }
 
   async updateReservation(id: string, reservationData: Partial<Reservation>): Promise<Reservation> {
-    try {
-      return await this.put(id, reservationData);
-    } catch (error) {
-      // Return mock updated reservation
-      return this.getMockReservation();
-    }
+    return await this.put(id, reservationData);
   }
 
   async getReservationById(id: string): Promise<Reservation> {
-    try {
-      return await super.get(id);
-    } catch (error) {
-      // Return mock reservation
-      return this.getMockReservation();
-    }
+    return await super.get(id);
   }
 
-  // Mock data methods for development/fallback
-  private getMockReservations(status?: string): Reservation[] {
-    const reservations = [
-      {
-        uuid: '550e8400-e29b-41d4-a716-446655440100',
-        reserved_by: '550e8400-e29b-41d4-a716-446655440200',
-        space_id: '550e8400-e29b-41d4-a716-446655440001',
-        status_id: '550e8400-e29b-41d4-a716-446655440300',
-        event_name: 'Reunión de Equipo',
-        event_description: 'Planificación del sprint Q1',
-        event_date: '2026-01-15',
-        start_time: '09:00',
-        end_time: '11:00',
-        event_price: 100.00,
-        pricing_rule_id: '550e8400-e29b-41d4-a716-446655440400',
-        created_at: '2026-01-08T10:00:00Z',
-        updated_at: '2026-01-08T10:00:00Z',
-        user: {
-          uuid: '550e8400-e29b-41d4-a716-446655440200',
-          name: 'Juan Pérez',
-          email: 'juan@example.com',
-          phone: '+584121234567',
-          role: 'user' as const,
-          status: 'active' as const,
-          created_at: '2026-01-01T00:00:00Z',
-          updated_at: '2026-01-01T00:00:00Z'
-        },
-        space: {
-          uuid: '550e8400-e29b-41d4-a716-446655440001',
-          name: 'Sala Berlin',
-          description: 'Sala moderna con vista a la ciudad',
-          capacity: 10,
-          spaces_type_id: '550e8400-e29b-41d4-a716-446655440500',
-          status_id: '550e8400-e29b-41d4-a716-446655440600',
-          pricing_rule_id: '550e8400-e29b-41d4-a716-446655440400',
-          is_active: true
-        },
-        status: {
-          uuid: '550e8400-e29b-41d4-a716-446655440300',
-          name: 'Confirmada'
-        }
-      },
-      {
-        uuid: '550e8400-e29b-41d4-a716-446655440101',
-        reserved_by: '550e8400-e29b-41d4-a716-446655440200',
-        space_id: '550e8400-e29b-41d4-a716-446655440002',
-        status_id: '550e8400-e29b-41d4-a716-446655440301',
-        event_name: 'Presentación Cliente',
-        event_description: 'Reunión importante con cliente potencial',
-        event_date: '2026-01-10',
-        start_time: '14:00',
-        end_time: '16:00',
-        event_price: 400.00,
-        pricing_rule_id: '550e8400-e29b-41d4-a716-446655440401',
-        created_at: '2026-01-05T09:00:00Z',
-        updated_at: '2026-01-05T09:00:00Z',
-        user: undefined,
-        space: undefined,
-        status: {
-          uuid: '550e8400-e29b-41d4-a716-446655440301',
-          name: 'Completada'
-        }
-      }
-    ];
-
-    if (status) {
-      return reservations.filter(r => r.status?.name.toLowerCase() === status.toLowerCase());
-    }
-
-    return reservations.map(r => ({ ...r, user: r.user || undefined, space: r.space || undefined }));
-  }
-
-  private getMockReservation(): Reservation {
-    return {
-      uuid: '550e8400-e29b-41d4-a716-446655440102',
-      reserved_by: '550e8400-e29b-41d4-a716-446655440200',
-      space_id: '550e8400-e29b-41d4-a716-446655440001',
-      status_id: '550e8400-e29b-41d4-a716-446655440302',
-      event_name: 'Nueva Reserva',
-      event_description: 'Descripción de la reserva',
-      event_date: '2026-01-20',
-      start_time: '10:00',
-      end_time: '12:00',
-      event_price: 100.00,
-      pricing_rule_id: '550e8400-e29b-41d4-a716-446655440400',
-      created_at: '2026-01-08T15:00:00Z',
-      updated_at: '2026-01-08T15:00:00Z',
-      user: undefined,
-      space: undefined,
-      status: {
-        uuid: '550e8400-e29b-41d4-a716-446655440302',
-        name: 'Confirmada'
-      }
-    };
-  }
 }

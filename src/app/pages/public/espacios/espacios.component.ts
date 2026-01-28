@@ -18,7 +18,7 @@ export class EspaciosComponent implements OnInit {
   mockSpaces: any[] = [];
   loading: boolean = true;
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     this.loadSpaces();
   }
 
@@ -40,7 +40,7 @@ export class EspaciosComponent implements OnInit {
       const apiFilters: any = {};
 
       if (filtros.capacidad > 0) apiFilters.capacity = filtros.capacidad;
-      // if (filtros.precio > 0) apiFilters.price = filtros.precio; // Assuming API supports price
+      if (filtros.precio > 0) apiFilters.price = filtros.precio;
       if (filtros.tipo) apiFilters.spaces_type_id = filtros.tipo; // Assuming backend handles this mapping or ID is passed
       if (filtros.fecha) apiFilters.fecha_deseada = filtros.fecha;
 

@@ -87,7 +87,7 @@ export class LoginComponent {
 
         setTimeout(() => {
           const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/espacios';
-          this.router.navigate([returnUrl]);          
+          this.router.navigate([returnUrl]);
         }, 500);
       })
       .catch((error) => {
@@ -122,13 +122,5 @@ export class LoginComponent {
       : [];
   }
 
-  onForgotPassword(event: Event): void {
-    event.preventDefault();
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Recuperación de Contraseña',
-      detail: 'Esta funcionalidad estará disponible próximamente. Contacta al administrador si necesitas ayuda.',
-      life: 5000
-    });
-  }
+
 }

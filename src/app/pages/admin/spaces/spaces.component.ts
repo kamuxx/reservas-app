@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
@@ -38,7 +38,8 @@ import { Space } from '../../../core/models';
     TooltipModule
   ],
   templateUrl: './spaces.component.html',
-  styleUrl: './spaces.component.css'
+  styleUrl: './spaces.component.css',
+  encapsulation: ViewEncapsulation.None
 })
 export class SpacesComponent implements OnInit {
   spaces: Space[] = [];
@@ -63,7 +64,7 @@ export class SpacesComponent implements OnInit {
   async loadSpaces(): Promise<void> {
     this.loading = true;
     try {
-      this.spaces = await this.spacesService.getAll();            
+      this.spaces = await this.spacesService.getAll();
     } catch (error) {
       this.messageService.add({
         severity: 'error',
@@ -160,14 +161,20 @@ export class SpacesComponent implements OnInit {
   }
 
   getStatusBadgeClass(isActive: boolean): string {
-    return isActive ? 'p-tag-success' : 'p-tag-danger';
+    if (isActive === true) return 'p-tag-success';
+    if (isActive === false) return 'p-tag-danger';
+    return 'p-tag-warning'; // Handle undefined/null
   }
 
   getStatusText(isActive: boolean): string {
-    return isActive ? 'Activo' : 'Inactivo';
+    if (isActive === true) return 'Activo';
+    if (isActive === false) return 'Inactivo';
+    return 'Pendiente'; // Handle undefined/null instead of "Desconocido"
   }
 
   getStatusIcon(isActive: boolean): string {
-    return isActive ? 'pi pi-check-circle' : 'pi pi-times-circle';
+    if (isActive === true) return 'pi pi-check-circle';
+    if (isActive === false) return 'pi pi-times-circle';
+    return 'pi pi-question-circle';
   }
 }

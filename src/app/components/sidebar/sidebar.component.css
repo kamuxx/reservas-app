@@ -1,0 +1,210 @@
+/* Sidebar wrapper - full width and height */
+.admin-sidebar {
+    width: 100%;
+    height: 100%;
+}
+
+/* Eliminar TODOS los bordes de PrimeNG - MÁS AGRESIVO */
+.admin-sidebar,
+.admin-sidebar *,
+.admin-sidebar .p-panelmenu,
+.admin-sidebar .p-panelmenu *,
+.admin-sidebar .p-panelmenu-panel,
+.admin-sidebar .p-panelmenu-header,
+.admin-sidebar .p-panelmenu-header-content,
+.admin-sidebar .p-panelmenu-header-link,
+.admin-sidebar .p-panelmenu-header-action,
+.admin-sidebar .p-panelmenu-content,
+.admin-sidebar .p-toggleable-content,
+.admin-sidebar .p-submenu-list,
+.admin-sidebar .p-menuitem,
+.admin-sidebar .p-menuitem-content,
+.admin-sidebar .p-menuitem-link {
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Asegurar que el componente p-panelmenu no tenga bordes */
+:host ::ng-deep .admin-sidebar,
+:host ::ng-deep .admin-sidebar * {
+    border: 0 !important;
+    outline: 0 !important;
+}
+
+/* Panel base - sin bordes ni fondos, sin separación */
+.admin-sidebar .p-panelmenu-panel {
+    margin-bottom: 0;
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+/* --- Parent Items (Main Navigation) --- */
+.admin-sidebar .p-panelmenu-header-link {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0;
+    color: #94a3b8;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    border: none;
+    background-color: transparent;
+    user-select: none;
+}
+
+.admin-sidebar .p-panelmenu-header-link:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #e5e7eb;
+}
+
+/* Parent item text and icons */
+.admin-sidebar .p-panelmenu-header-link .p-menuitem-text {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.admin-sidebar .p-panelmenu-header-link .p-menuitem-icon {
+    color: #94a3b8 !important;
+    font-size: 1rem !important;
+    margin-right: 0.75rem;
+    opacity: 0.9 !important;
+    font-family: 'primeicons' !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+    font-variant: normal !important;
+    text-transform: none !important;
+    line-height: 1 !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+}
+
+.admin-sidebar .p-panelmenu-header-link:hover .p-menuitem-text,
+.admin-sidebar .p-panelmenu-header-link:hover .p-menuitem-icon {
+    color: #e5e7eb;
+}
+
+/* Parent Active State - cuando está expandido */
+.admin-sidebar .p-panelmenu-header-link[aria-expanded="true"],
+.admin-sidebar .p-panelmenu-header-link.p-highlight {
+    color: #34d399;
+    background-color: rgba(16, 185, 129, 0.1);
+}
+
+.admin-sidebar .p-panelmenu-header-link[aria-expanded="true"] .p-menuitem-text,
+.admin-sidebar .p-panelmenu-header-link[aria-expanded="true"] .p-menuitem-icon,
+.admin-sidebar .p-panelmenu-header-link.p-highlight .p-menuitem-text,
+.admin-sidebar .p-panelmenu-header-link.p-highlight .p-menuitem-icon {
+    color: #34d399;
+}
+
+/* Icono de expansión (chevron) */
+.admin-sidebar .p-panelmenu-header-icon {
+    margin-left: auto;
+    color: #64748b;
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+.admin-sidebar .p-panelmenu-header-link:hover .p-panelmenu-header-icon {
+    color: #94a3b8;
+}
+
+.admin-sidebar .p-panelmenu-header-link[aria-expanded="true"] .p-panelmenu-header-icon {
+    color: #34d399;
+}
+
+/* --- Submenu Container --- */
+.admin-sidebar .p-toggleable-content {
+    border: none;
+    background-color: transparent;
+}
+
+.admin-sidebar .p-panelmenu-content {
+    padding-top: 0;
+    padding-bottom: 0;
+    border: none;
+    background-color: transparent;
+}
+
+/* --- Submenu Items --- */
+.admin-sidebar .p-submenu-list {
+    margin-left: 0;
+    padding-left: 2.5rem;
+    border-left: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+.admin-sidebar .p-menuitem-link {
+    display: flex;
+    align-items: center;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0;
+    background-color: transparent;
+    color: #94a3b8;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    user-select: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.admin-sidebar .p-menuitem-link:hover {
+    color: #e5e7eb;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Submenu item text and icons */
+.admin-sidebar .p-menuitem-link .p-menuitem-text {
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.admin-sidebar .p-menuitem-link .p-menuitem-icon {
+    color: #64748b !important;
+    margin-right: 0.625rem;
+    font-size: 0.875rem !important;
+    opacity: 0.7 !important;
+    font-family: 'primeicons' !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+    font-variant: normal !important;
+    text-transform: none !important;
+    line-height: 1 !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+}
+
+.admin-sidebar .p-menuitem-link:hover .p-menuitem-text {
+    color: #e5e7eb;
+}
+
+.admin-sidebar .p-menuitem-link:hover .p-menuitem-icon {
+    color: #94a3b8;
+    opacity: 1;
+}
+
+/* Active submenu item */
+.admin-sidebar .p-menuitem-link.router-link-active {
+    color: #34d399;
+    background-color: rgba(16, 185, 129, 0.15);
+    font-weight: 500;
+}
+
+.admin-sidebar .p-menuitem-link.router-link-active .p-menuitem-text {
+    color: #34d399;
+}
+
+.admin-sidebar .p-menuitem-link.router-link-active .p-menuitem-icon {
+    color: #34d399;
+    opacity: 1;
+}

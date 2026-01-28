@@ -13,6 +13,10 @@ export const routes: Routes = [
         path: 'register',
         loadComponent: () => import('./pages/auth/register/register.component').then(m => m.RegisterComponent)
     },
+    {
+        path: 'forgot-password',
+        loadComponent: () => import('./pages/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent)
+    },
 
     // Public layout routes
     {
@@ -36,6 +40,11 @@ export const routes: Routes = [
                 path: 'mis-reservas',
                 loadComponent: () => import('./pages/public/mis-reservas/mis-reservas.component').then(m => m.MisReservasComponent),
                 canActivate: [authGuard]
+            },
+            {
+                path: 'change-password',
+                loadComponent: () => import('./pages/auth/change-password/change-password.component').then(m => m.ChangePasswordComponent),
+                canActivate: [authGuard]
             }
         ]
     },
@@ -45,17 +54,7 @@ export const routes: Routes = [
         path: 'admin',
         loadComponent: () => import('./layouts/admin-layout/admin-layout.component').then(m => m.AdminLayoutComponent),
         canActivate: [authGuard, adminGuard],
-        children: [
-            {
-                path: '',
-                redirectTo: 'espacios',
-                pathMatch: 'full'
-            },
-            {
-                path: 'espacios',
-                loadComponent: () => import('./pages/admin/spaces/spaces.component').then(m => m.SpacesComponent)
-            }
-        ]
+        loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
     },
 
     // Catch-all route

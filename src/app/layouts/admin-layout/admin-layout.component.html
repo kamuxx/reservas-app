@@ -1,76 +1,60 @@
-<div class="min-h-screen bg-gray-50 flex">
+<div id="admin-layout">
+
+  <!-- Overlay solo para Móvil -->
+  @if (sidebarVisible()) {
+  <div class="fixed inset-0 z-40 sidebar-overlay lg:hidden transition-opacity" (click)="toggleSidebar()">
+  </div>
+  }
+
   <!-- Sidebar -->
-  <div class="w-64 bg-slate-900 shadow-xl transition-all duration-300 ease-in-out"
-       [ngClass]="{ 'w-16': !sidebarVisible, 'w-64': sidebarVisible }">
-    
-    <!-- Logo Section -->
-    <div class="h-16 bg-slate-800 flex items-center px-4">
-      <div class="flex items-center space-x-3">
-        <div class="h-10 w-10 bg-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0">
-          <i class="pi pi-building text-white text-lg"></i>
+  <aside class="glass-sidebar sidebar-area" [class.open]="sidebarVisible()" [class.closed]="!sidebarVisible()">
+
+    <!-- Header del Sidebar -->
+    <div class="h-16 flex items-center justify-center border-b border-emerald-600/30 shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="logo-icon">
+          <i class="pi pi-shield text-xl"></i>
         </div>
-        <span *ngIf="sidebarVisible" class="text-white font-bold text-lg">Admin</span>
+        <span class="text-xl font-bold text-white tracking-wide">ADMIN</span>
       </div>
     </div>
 
-    <!-- Navigation Menu -->
-    <nav class="p-4 space-y-2">
-      <a *ngFor="let item of dashboardItems"
-         [routerLink]="item.routerLink"
-         routerLinkActive="bg-emerald-600"
-         [routerLinkActiveOptions]="{ exact: false }"
-         class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-slate-700 hover:text-white transition-colors group">
-        
-        <i [class]="item.icon" class="text-xl group-hover:text-emerald-400"></i>
-        <span *ngIf="sidebarVisible" class="font-medium">{{ item.label }}</span>
-      </a>
-    </nav>
-  </div>
+    <!-- Menú Scrollable -->
+    <div class="flex-1 overflow-y-auto py-4 px-2 custom-scrollbar">
+      <app-sidebar [model]="userMenuItems"></app-sidebar>
+    </div>
+  </aside>
 
-  <!-- Main Content -->
-  <div class="flex-1 flex flex-col">
-    <!-- Top Navigation -->
-    <header class="bg-white shadow-sm border-b border-gray-200">
-      <div class="px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-          <!-- Toggle Sidebar -->
-          <p-button icon="pi pi-bars"
-                    [class]="'p-button-text p-button-secondary'"
-                    (click)="toggleSidebar()"
-                    class="!text-gray-600 hover:!text-emerald-600">
-          </p-button>
+  <!-- Contenido Principal -->
+  <div class="content-area">
+    <!-- Topbar -->
+    <header
+      class="h-16 glass-header border-b border-emerald-600/30 flex items-center justify-between px-4 lg:px-6 z-30 shrink-0">
 
-          <!-- Right Section -->
-          <div class="flex items-center space-x-4">
-            <!-- Notifications -->
-            <p-button icon="pi pi-bell"
-                      [badge]="'3'"
-                      [class]="'p-button-text p-button-secondary'"
-                      class="!text-gray-600 hover:!text-emerald-600">
-            </p-button>
+      <!-- Botón Toggle (Solo Móvil) -->
+      <button
+        class="p-2 text-gray-200 hover:text-white rounded-lg hover:bg-emerald-600/20 transition-colors focus:outline-none lg:hidden mobile-toggle"
+        (click)="toggleSidebar()" aria-label="Toggle sidebar">
+        <i class="pi pi-bars text-xl"></i>
+      </button>
 
-            <!-- User Menu -->
-            <p-tieredMenu [model]="userMenuItems" [popup]="true" appendTo="body">
-              <button pButton type="button" class="p-button-text">
-                <div class="flex items-center space-x-3">
-                  <p-avatar [label]="userInitial" 
-                             class="bg-emerald-600 text-white">
-                  </p-avatar>
-                  <span class="text-gray-700 font-medium">{{ userName }}</span>
-                  <i class="pi pi-chevron-down text-gray-400"></i>
-                </div>
-              </button>
-            </p-tieredMenu>
-          </div>
+      <div class="flex-1"></div>
+
+      <div class="flex items-center gap-4">
+        <div class="user-avatar-wrapper">
+          <p-avatar [label]="userInitial" size="normal" class="emerald-avatar">
+          </p-avatar>
         </div>
+        <div class="hidden md:block">
+          <p class="text-sm font-semibold text-white">{{ userName }}</p>
+          <p class="text-xs text-emerald-300">Administrador</p>
+        </div>
+        <p-menubar [model]="navbarItems" styleClass="glass-menubar border-none bg-transparent text-gray-50" />
       </div>
     </header>
 
-    <!-- Page Content -->
-    <main class="flex-1 overflow-y-auto">
-      <div class="p-6">
-        <router-outlet></router-outlet>
-      </div>
+    <main class="flex-1 overflow-y-auto p-4 lg:p-8 scroll-smooth relative">
+      <router-outlet></router-outlet>
     </main>
   </div>
 </div>

@@ -1,0 +1,266 @@
+<div class="p-6 rounded-lg">
+    <p-toast></p-toast>
+    <p-confirmDialog header="Confirmación" width="450px"></p-confirmDialog>
+
+    <div class="flex justify-between items-center mb-4">
+         <h1 class="text-2xl font-bold text-white">Gestionar Espacios</h1>
+         <p-button label="Nuevo Espacio" icon="pi pi-plus" styleClass="p-button-success mr-2 text-sm px-4 py-2" (onClick)="openNew()" pTooltip="Crear un nuevo espacio" tooltipPosition="left"></p-button>
+    </div>
+
+    <p-table #dt [value]="spaces()" [rows]="10" [paginator]="true" [globalFilterFields]="['name','description','type.name','status.name']"
+        [tableStyle]="{'min-width': '75rem'}"
+        [rowHover]="true" dataKey="uuid"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} espacios" [showCurrentPageReport]="true"
+        [loading]="loading()">
+        
+        <ng-template pTemplate="caption">
+            <div class="flex items-center justify-between">
+                <h5 class="m-0 text-white">Administrar Espacios</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="onGlobalFilter($event, dt)" 
+                           placeholder="Buscar espacios..." class="w-full pl-8" />
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="name" style="width:25%">
+                    <div class="flex items-center gap-2">
+                        Nombre
+                        <p-sortIcon field="name"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="description" style="width:30%">
+                    <div class="flex items-center gap-2">
+                        Descripción
+                        <p-sortIcon field="description"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="capacity" style="width:10%">
+                    <div class="flex items-center gap-2">
+                        Capacidad
+                        <p-sortIcon field="capacity"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="price_per_hour" style="width:10%">
+                    <div class="flex items-center gap-2">
+                        Precio/Hora
+                        <p-sortIcon field="price_per_hour"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="status.name" style="width:15%">
+                    <div class="flex items-center gap-2">
+                        Estado
+                        <p-sortIcon field="status.name"></p-sortIcon>
+                    </div>
+                </th>
+                <th style="width:10%">Acciones</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-space>
+            <tr>
+                <td>{{space.name}}</td>
+                <td>{{space.description}}</td>
+                <td>{{space.capacity}}</td>
+                <td>${{space.price_per_hour}}</td>
+                <td>
+                    <span [class]="'p-tag p-tag-rounded'" 
+                          [class.p-tag-success]="space.status?.name === 'Activo'"
+                          [class.p-tag-warning]="space.status?.name === 'Mantenimiento'"
+                          [class.p-tag-danger]="space.status?.name === 'Inactivo'">
+                        {{space.status?.name}}
+                    </span>
+                </td>
+                <td>
+                    <div class="flex gap-2">
+                        <p-button icon="pi pi-pencil" 
+                                  styleClass="p-button-outlined p-button-rounded p-button-info mr-2" 
+                                  (click)="editSpace(space)" 
+                                  pTooltip="Editar espacio" tooltipPosition="top"></p-button>
+                        <p-button icon="pi pi-trash" 
+                                  styleClass="p-button-outlined p-button-rounded p-button-danger" 
+                                  (click)="deleteSpace(space)" 
+                                  pTooltip="Eliminar espacio" tooltipPosition="top"></p-button>
+                        <p-button icon="pi pi-calendar" 
+                                  styleClass="p-button-outlined p-button-rounded p-button-secondary" 
+                                  (click)="viewReservations(space)" 
+                                  pTooltip="Ver reservas" tooltipPosition="top"></p-button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="summary">
+            <div class="flex items-center justify-between p-4">
+                <div class="text-white">
+                    En total hay {{spaces() ? spaces().length : 0 }} espacios.
+                </div>
+            </div>
+        </ng-template>
+    </p-table>
+
+    <p-dialog [(visible)]="spaceDialog" [style]="{width: '600px'}" [modal]="true" styleClass="" [closable]="false">
+        <ng-template pTemplate="header">
+            <div class="flex items-center justify-between w-full">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-linear-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
+                        <i class="pi pi-building text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white m-0">{{ currentSpace.uuid ? 'Actualizar Espacio' : 'Crear Nuevo Espacio' }}</h2>
+                        <p class="text-emerald-300 text-sm m-0">{{ currentSpace.uuid ? 'Modifica los detalles del espacio' : 'Completa la información para crear un nuevo espacio' }}</p>
+                    </div>
+                </div>
+                <button class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center group" (click)="hideDialog()">
+                    <i class="pi pi-times text-white/70 group-hover:text-white transition-colors"></i>
+                </button>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="content">
+            <form [formGroup]="form" class="space-y-6 mt-4">
+                <div class="bg-white/5 rounded-xl p-5 border border-white/10">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="pi pi-info-circle text-emerald-400"></i>
+                        <h3 class="text-white font-semibold">Información Básica</h3>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="field">
+                            <label class="block text-sm font-medium text-emerald-300 mb-2">Nombre del Espacio *</label>
+                            <input pInputText formControlName="name" 
+                                   class="w-full" 
+                                   placeholder="Ej: Sala de Reuniones Ejecutiva"
+                                   [ngClass]="{ 'p-invalid': submitted && form.controls['name'].invalid }" />
+                            
+                            @if (submitted && form.controls['name'].invalid) {
+                                <small class="p-error block mt-2">
+                                    <i class="pi pi-exclamation-triangle mr-1"></i>
+                                    El nombre es obligatorio
+                                </small>
+                            }
+                        </div>
+                        
+                        <div class="field">
+                            <label class="block text-sm font-medium text-emerald-300 mb-2">Descripción</label>
+                            <textarea pInputTextarea formControlName="description" 
+                                      class="w-full" 
+                                      rows="3" 
+                                      placeholder="Describe las características y equipamiento del espacio..."
+                                      autoResize="true"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white/5 rounded-xl p-5 border border-white/10">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="pi pi-cog text-emerald-400"></i>
+                        <h3 class="text-white font-semibold">Configuración</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="field">
+                            <label class="block text-sm font-medium text-emerald-300 mb-2">Capacidad *</label>
+                            <p-inputNumber formControlName="capacity" 
+                                           styleClass="w-full"
+                                           placeholder="Número de personas"
+                                           [showButtons]="true"
+                                           [min]="1"
+                                           [max]="1000"
+                                           [ngClass]="{ 'p-invalid': submitted && form.controls['capacity'].invalid }">
+                            </p-inputNumber>
+                            
+                            @if (submitted && form.controls['capacity'].invalid) {
+                                <small class="p-error block mt-2">
+                                    <i class="pi pi-exclamation-triangle mr-1"></i>
+                                    La capacidad debe ser mayor a 0
+                                </small>
+                            }
+                        </div>
+                        
+                        <div class="field">
+                            <label class="block text-sm font-medium text-emerald-300 mb-2">Precio por Hora *</label>
+                            <p-inputNumber formControlName="price_per_hour" 
+                                           styleClass="w-full"
+                                           placeholder="0.00"
+                                           [showButtons]="true"
+                                           [min]="0"
+                                           [step]="0.50"
+                                           mode="currency"
+                                           currency="USD"
+                                           [ngClass]="{ 'p-invalid': submitted && form.controls['price_per_hour'].invalid }">
+                            </p-inputNumber>
+                            
+                            @if (submitted && form.controls['price_per_hour'].invalid) {
+                                <small class="p-error block mt-2">
+                                    <i class="pi pi-exclamation-triangle mr-1"></i>
+                                    El precio es obligatorio
+                                </small>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white/5 rounded-xl p-5 border border-white/10">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="pi pi-chart-line text-emerald-400"></i>
+                        <h3 class="text-white font-semibold">Estado y Disponibilidad</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="field">
+                            <label class="block text-sm font-medium text-emerald-300 mb-2">Tipo de Espacio</label>
+                            <p-dropdown [options]="spaceTypes" optionLabel="name" optionValue="id" 
+                                        [style]="{'width':'100%'}" styleClass="w-full"
+                                        placeholder="Seleccionar tipo">
+                            </p-dropdown>
+                        </div>
+                        <div class="field">
+                            <label class="block text-sm font-medium text-emerald-300 mb-2">Estado</label>
+                            <p-dropdown [options]="statusOptions" optionLabel="name" optionValue="id" 
+                                        [style]="{'width':'100%'}" styleClass="w-full"
+                                        placeholder="Seleccionar estado">
+                            </p-dropdown>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <div class="flex flex-col gap-4 p-0 mt-3">
+                <div class="bg-linear-to-r from-emerald-500/10 to-emerald-600/10 border border-emerald-500/30 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="shrink-0 w-5 h-5 bg-emerald-500/20 rounded-full flex items-center justify-center mt-0.5">
+                            <i class="pi pi-info-circle text-emerald-400 text-xs"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-emerald-300 text-sm font-medium">Campos obligatorios</p>
+                            <p class="text-emerald-400/80 text-xs mt-1">Los campos marcados con asterisco (*) son requeridos.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-white/10 pt-4">
+                    <div class="flex items-center justify-end gap-4">                           
+                        <div class="flex items-center gap-3">
+                            <p-button label="Cancelar" 
+                                      icon="pi pi-times" 
+                                      iconPos="left"
+                                      styleClass="p-button-outlined p-button-secondary border-white/20 text-white/70 hover:text-white hover:bg-white/10 px-4 py-2 text-sm transition-all duration-200" 
+                                      (onClick)="hideDialog()"></p-button>
+                            <p-button label="{{ currentSpace.uuid ? 'Actualizar Espacio' : 'Crear Espacio' }}" 
+                                      icon="{{ currentSpace.uuid ? 'pi pi-refresh' : 'pi pi-plus' }}" 
+                                      iconPos="left"
+                                      styleClass="bg-linear-to-r from-emerald-500 to-emerald-600 border-emerald-500 text-white px-4 py-2 text-sm font-medium shadow-lg hover:shadow-emerald-500/25 transition-all duration-200" 
+                                      (onClick)="saveSpace()"></p-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-dialog>
+</div>

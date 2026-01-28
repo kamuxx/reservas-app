@@ -46,7 +46,7 @@
           <p-checkbox formControlName="remember" [binary]="true" inputId="remember"></p-checkbox>
           <label for="remember" class="ml-2 cursor-pointer text-gray-200">Recordarme</label>
         </div>
-        <a (click)="onForgotPassword($event)" class="forgot-link text-sm text-white" role="button" tabindex="0"
+        <a routerLink="/forgot-password" class="forgot-link text-sm text-white" role="button" tabindex="0"
           aria-label="Recuperar contraseña">¿Olvidaste tu contraseña?</a>
       </div>
 
